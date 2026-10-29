@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petite question...</title>
+    <style>
+        body {
+            background-color: #ffe4e6; /* Rose très doux */
+            color: #881337;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            overflow: hidden;
+        }
+        .container {
+            max-width: 90%;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+        }
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            min-height: 100px;
+        }
+        .btn {
+            padding: 12px 28px;
+            font-size: 1.1rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+            transition: transform 0.1s ease;
+        }
+        #yesBtn {
+            background-color: #e11d48;
+            color: white;
+            z-index: 10;
+        }
+        #noBtn {
+            background-color: #cbd5e1;
+            color: #475569;
+            position: absolute;
+            transition: 0.15s ease-out;
+        }
+        #responseMessage {
+            margin-top: 30px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 id="question">Veux-tu être mon Valentin / maentine ? ❤️</h1>
+        
+        <div class="buttons" id="buttonArea">
+            <button class="btn" id="yesBtn" onclick="sendResponse('Oui')">Oui ! 🥰</button>
+            <button class="btn" id="noBtn" onmouseover="moveButton()" onclick="moveButton()">Non 😢</button>
+        </div>
+
+        <div id="responseMessage"></div>
+    </div>
+
+    <script>
+        // Effet "bouton fuyant" pour le Non
+        const noBtn = document.getElementById('noBtn');
+        
+        function moveButton() {
+            // Calcule des positions aléatoires sur l'écran
+            const x = Math.random() * (window.innerWidth - 150);
+            const y = Math.random() * (window.innerHeight - 150);
+            
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+        }
+
+        // Fonction pour envoyer la réponse par mail gratuitement via Formspree
+        function sendResponse(answer) {
+            // Cache les boutons et affiche un message
+            document.getElementById('buttonArea').style.display = 'none';
+            document.getElementById('question').style.display = 'none';
+            document.getElementById('responseMessageinnerText = "YAY ! J'ai hâte ! ❤️";
+
+            // Remplacez "YOUR_FORMSPREE_ID" par votre propre lien Formspree (voir étape 2)
+            fetch('https://formspree.io/f/YOUR_FORMSPREE_ID', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ reponse: answer })
+            }).then(response => {
+                console.log('Réponse envoyée par mail !');
+            }).catch(error => {
+                console.error('Erreur', error);
+            });
+        }
+    </script>
+</body>
+</html>
