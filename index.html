@@ -39,11 +39,6 @@
             border-radius: 15px;
             box-shadow: 0 10px 25px rgba(136, 19, 55, 0.15);
             display: inline-block;
-            animation: bounce 2s infinite;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: deselect; translateY(-10px); }
         }
 
         /* --- ÉCRAN DE LA QUESTION (caché au début) --- */
@@ -54,8 +49,9 @@
             max-width: 90%;
         }
         h1 {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             margin-bottom: 2rem;
+            line-height: 1.4;
         }
         .buttons {
             display: flex;
@@ -95,75 +91,59 @@
 
     <!-- Étape 1 : L'enveloppe -->
     <div id="envelope-container" onclick="openEnvelope()">
-        <div class="instruction">Tu as reçu un message, clique pour l'ouvrir 💌</div>
+        <div class="instruction">Tu auras reçu un message, clique pour l'ouvrir 💌</div>
         <div class="envelope">✉️</div>
     </div>
 
-    <!-- Étape 2 : La question et les boutons (cachés au départ) -->
+    <!-- Étape 2 : La question et le formulaire Formspree -->
     <div id="question-container">
-        <h1 id="question">Est ce que tu veux manger un mont d'or ce soir ? ❤️ </br> Tu ne peux pas refuser 😜</h1>
+        <h1 id="question">Est ce que tu veux manger un mont d'or ce soir ? ❤️ <br> Tu ne peux pas refuser 😜</h1>
         
-        <div class="buttons" id="buttonArea">
-            <button class="btn" id="yesBtn" onclick="sendResponse('Oui')">Oui ! 🥰</button>
-            <button class="btn" id="noBtn" ontouchstart="moveButton()" onmouseover="moveButton()" onclick="moveButton()">Non 😢</button>
-        </div>
+        <form id="my-form">
+            <input type="hidden" name="reponse" id="reponseInput" value="Oui">
+            
+            <div class="buttons" id="buttonArea">
+                <button type="submit" class="btn" id="yesBtn" data-fs-submit-btn onclick="setYes()">Oui ! 🥰</button>
+                <button type="button" class="btn" id="noBtn" ontouchstart="moveButton(event)" onmouseover="moveButton(event)" onclick="moveButton(event)">Non 😢</button>
+            </div>
+        </form>
 
-        <div id="responseMessage"></div>
+        <div id="responseMessage" data-fs-success></div>
     </div>
 
+    <!-- Scripts -->
     <script>
-        // Fonction pour ouvrir l'enveloppe
         function openEnvelope() {
-            const envContainer = document.getElementById('envelope-container');
+            document.getElementById('envelope-container').style.display = 'none';
             const qContainer = document.getElementById('question-container');
-
-            // Disparition de l'enveloppe
-            envContainer.style.display = 'none';
-
-            // Apparition de la question en fondu
             qContainer.style.display = 'block';
-            setTimeout(() => {
-                qContainer.style.opacity = '1';
-            }, 50);
+            setTimeout(() => { qContainer.style.opacity = '1'; }, 50);
         }
 
-        // Fonction corrigée pour faire fuir le bouton "Non" sur iPad et PC
-        const noBtn = document.getElementById('noBtn');
-        
-        function moveButton(event) {
-            // Empêche le comportement paratique par défaut du clic tactile
-            if (event) event.preventDefault();
+        function setYes() {
+            document.getElementById('reponseInput').value = "Oui ! Elle a dit OUI pour le Mont d'Or 🫕❤️";
+            setTimeout(() => {
+                document.getElementById('buttonArea').style.display = 'none';
+                document.getElementById('question').style.display = 'none';
+                document.getElementById('responseMessage').innerText = "YAY ! Prépare le pain ! 🫕❤️";
+            }, 300);
+        }
 
-            // Calcule une position aléatoire dans l'écran
+        const noBtn = document.getElementById('noBtn');
+        function moveButton(event) {
+            if (event) event.preventDefault();
             const x = Math.random() * (window.innerWidth - 150);
             const y = Math.random() * (window.innerHeight - 150);
-            
             noBtn.style.position = 'fixed';
             noBtn.style.left = x + 'px';
             noBtn.style.top = y + 'px';
         }
-
-        // Fonction d'envoi du mail (pensez à remplacer YOUR_FORMSPREE_ID)
-        function sendResponse(answer) {
-            document.getElementById('buttonArea').style.display = 'none';
-            document.getElementById('question').style.display = 'none';
-            document.getElementById('responseMessage').innerText = "YAY ! J'ai hâte ! ❤️";
-
-            //fetch('https://formspree.io/f/moeelqyv', {
-                //method: 'POST',
-                //headers: { 'Content-Type': 'application/json' },
-                //body: JSON.stringify({ reponse: answer })
-            }).catch(error => console.error('Erreur', error));*/
-            
-            fetch('https://formspree.io/f/moeelqyv', {
-    			method: 'POST',
-    			headers: { 
-        			'Content-Type': 'application/json',
-        			'Accept': 'application/json' 
-   				},
-    			body: JSON.stringify({ reponse: answer })
-			})
-        }
     </script>
+    
+    <script>
+        window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+        formspree('initForm', { formElement: '#my-form', formId: 'moeelqyv' });
+    </script>
+    <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 </body>
 </html>
