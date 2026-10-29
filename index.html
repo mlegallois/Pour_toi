@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Petite question...</title>
+    <title>Une lettre pour toi...</title>
     <style>
         body {
-            background-color: #ffe4e6; /* Rose très doux */
+            background-color: #ffe4e6;
             color: #881337;
             font-family: 'Inter', sans-serif;
             display: flex;
@@ -18,9 +18,40 @@
             text-align: center;
             overflow: hidden;
         }
-        .container {
+
+        /* --- ÉCRAN DE L'ENVELOPPE --- */
+        #envelope-container {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        #envelope-container:hover {
+            transform: scale(1.05);
+        }
+        .instruction {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        .envelope {
+            font-size: 5rem;
+            background: white;
+            padding: 30px 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(136, 19, 55, 0.15);
+            display: inline-block;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: deselect; translateY(-10px); }
+        }
+
+        /* --- ÉCRAN DE LA QUESTION (caché au début) --- */
+        #question-container {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
             max-width: 90%;
-            padding: 20px;
         }
         h1 {
             font-size: 1.8rem;
@@ -32,7 +63,7 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            min-height: 100px;
+            height: 100px;
         }
         .btn {
             padding: 12px 28px;
@@ -41,7 +72,6 @@
             cursor: pointer;
             border: none;
             font-weight: bold;
-            transition: transform 0.1s ease;
         }
         #yesBtn {
             background-color: #e11d48;
@@ -51,9 +81,8 @@
         #noBtn {
             background-color: #cbd5e1;
             color: #475569;
-            position: absolute;
-            left: 120px;
-            transition: 0.15s ease-out;
+            position: relative;
+            transition: 0.1s ease-out;
         }
         #responseMessage {
             margin-top: 30px;
@@ -64,8 +93,15 @@
 </head>
 <body>
 
-    <div class="container">
-        <h1 id="question">J'ai une idée que tu ne pourras pas refuser. Tuu veux la decouvrir ?❤️</h1>
+    <!-- Étape 1 : L'enveloppe -->
+    <div id="envelope-container" onclick="openEnvelope()">
+        <div class="instruction">Tu as reçu un message, clique pour l'ouvrir 💌</div>
+        <div class="envelope">✉️</div>
+    </div>
+
+    <!-- Étape 2 : La question et les boutons (cachés au départ) -->
+    <div id="question-container">
+        <h1 id="question">Veux-tu être mon Valentin / maentine ? ❤️</h1>
         
         <div class="buttons" id="buttonArea">
             <button class="btn" id="yesBtn" onclick="sendResponse('Oui')">Oui ! 🥰</button>
@@ -76,11 +112,29 @@
     </div>
 
     <script>
-        // Effet "bouton fuyant" pour le Non
+        // Fonction pour ouvrir l'enveloppe
+        function openEnvelope() {
+            const envContainer = document.getElementById('envelope-container');
+            const qContainer = document.getElementById('question-container');
+
+            // Disparition de l'enveloppe
+            envContainer.style.display = 'none';
+
+            // Apparition de la question en fondu
+            qContainer.style.display = 'block';
+            setTimeout(() => {
+                qContainer.style.opacity = '1';
+            }, 50);
+        }
+
+        // Fonction corrigée pour faire fuir le bouton "Non" sur iPad et PC
         const noBtn = document.getElementById('noBtn');
         
-        function moveButton() {
-            // Calcule des positions aléatoires sur l'écran
+        function moveButton(event) {
+            // Empêche le comportement paratique par défaut du clic tactile
+            if (event) event.preventDefault();
+
+            // Calcule une position aléatoire dans l'écran
             const x = Math.random() * (window.innerWidth - 150);
             const y = Math.random() * (window.innerHeight - 150);
             
@@ -89,25 +143,17 @@
             noBtn.style.top = y + 'px';
         }
 
-        // Fonction pour envoyer la réponse par mail gratuitement via Formspree
+        // Fonction d'envoi du mail (pensez à remplacer YOUR_FORMSPREE_ID)
         function sendResponse(answer) {
-            // Cache les boutons et affiche un message
             document.getElementById('buttonArea').style.display = 'none';
             document.getElementById('question').style.display = 'none';
-            document.getElementById('responseMessageinnerText = "YAY ! J'ai hâte ! ❤️";
+            document.getElementById('responseMessage').innerText = "YAY ! J'ai hâte ! ❤️";
 
-            // Remplacez "YOUR_FORMSPREE_ID" par votre propre lien Formspree (voir étape 2)
             fetch('https://formspree.io/f/YOUR_FORMSPREE_ID', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ reponse: answer })
-            }).then(response => {
-                console.log('Réponse envoyée par mail !');
-            }).catch(error => {
-                console.error('Erreur', error);
-            });
+            }).catch(error => console.error('Erreur', error));
         }
     </script>
 </body>
