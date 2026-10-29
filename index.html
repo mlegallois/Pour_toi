@@ -149,11 +149,20 @@
             document.getElementById('question').style.display = 'none';
             document.getElementById('responseMessage').innerText = "YAY ! J'ai hâte ! ❤️";
 
+            //fetch('https://formspree.io/f/moeelqyv', {
+                //method: 'POST',
+                //headers: { 'Content-Type': 'application/json' },
+                //body: JSON.stringify({ reponse: answer })
+            }).catch(error => console.error('Erreur', error));*/
+            
             fetch('https://formspree.io/f/moeelqyv', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ reponse: answer })
-            }).catch(error => console.error('Erreur', error));
+    			method: 'POST',
+    			headers: { 
+        			'Content-Type': 'application/json',
+        			'Accept': 'application/json' 
+   				},
+    			body: JSON.stringify({ reponse: answer })
+			})
         }
     </script>
 </body>
