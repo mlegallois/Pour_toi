@@ -52,6 +52,7 @@
             background-color: #cbd5e1;
             color: #475569;
             position: absolute;
+            left: 120px;
             transition: 0.15s ease-out;
         }
         #responseMessage {
@@ -64,11 +65,11 @@
 <body>
 
     <div class="container">
-        <h1 id="question">Veux-tu être mon Valentin / maentine ? ❤️</h1>
+        <h1 id="question">J'ai une idée que tu ne pourras pas refuser. Tuu veux la decouvrir ?❤️</h1>
         
         <div class="buttons" id="buttonArea">
             <button class="btn" id="yesBtn" onclick="sendResponse('Oui')">Oui ! 🥰</button>
-            <button class="btn" id="noBtn" onmouseover="moveButton()" onclick="moveButton()">Non 😢</button>
+            <button class="btn" id="noBtn" ontouchstart="moveButton()" onmouseover="moveButton()" onclick="moveButton()">Non 😢</button>
         </div>
 
         <div id="responseMessage"></div>
